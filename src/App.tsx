@@ -1,47 +1,37 @@
-import React from 'react'
-import { Responsive, WidthProvider } from "react-grid-layout"
+import React, { useState } from 'react'
 
 import GridItem from "./components/GridItem"
-import layouts from './configs/layoutConfig'
+import Header from './components/Header'
 
-import "react-grid-layout/css/styles.css"
-import "react-resizable/css/styles.css"
 import './App.css'
-
-const ResponsiveGridLayout = WidthProvider(Responsive)
 
 const App = () => {
 
-  const onBreakpointChange = (newBreakpoint: any, newCols: any) => {
-    console.log(
-      `Breakpoint nuevo: ${newBreakpoint}, cantidad de columnas: ${newCols}`
-    )
-  }
+  const [isSelected, setIsSelected] = useState<boolean>(false)
+  const [activeItem, setActiveItem] = useState<number | null>(null)
 
-  const onLayoutChange = (layout: any, layouts: any) => {
-    console.log(
-      `layout: ${layout}, layouts: ${layouts}`
-    )
+  const handleSelection = ( order: number) => {
+    if (!isSelected) {
+      setIsSelected(current => !current)
+    }
+    if (activeItem === order && activeItem ) {
+      setIsSelected(current => !current)
+      setActiveItem(null)
+    } else {
+      setActiveItem(order)
+    }
   }
-
-  console.log("layouts.lg: ", layouts.lg)
   
   return (
-    <ResponsiveGridLayout
-      className="layout"
-      layouts={layouts}
-      // measureBeforeMount={false}
-      // useCSSTransforms={false}
-      isDraggable
-      isResizable
-      draggableHandle=".grid-item__title"
-      breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
-      cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
-      onBreakpointChange={onBreakpointChange}
-      onLayoutChange={onLayoutChange}
-      >
-          <div key="graph1"> hi</div>
-      </ResponsiveGridLayout>
+    <div className=''>
+      <Header/>
+      <div className={`layout ${isSelected ? `hasSelected hasSelected-${activeItem}` : ''}`}>
+        <GridItem title='box1' order={1} active={activeItem === 1 ? true : false} handleSelection={handleSelection} className="element1"/>
+        <GridItem title='box2' order={2} active={activeItem === 2 ? true : false} handleSelection={handleSelection} className="element2"/>
+        <GridItem title='box3' order={3} active={activeItem === 3 ? true : false} handleSelection={handleSelection} className="element3"/>
+        <GridItem title='box4' order={4} active={activeItem === 4 ? true : false} handleSelection={handleSelection} className="element4"/>
+      </div>
+    </div>
   )
 }
 
